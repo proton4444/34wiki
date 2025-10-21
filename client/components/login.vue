@@ -80,7 +80,7 @@
               dark
               @click='login'
               :loading='isLoading'
-              ) {{ $t('auth:actions.login') }}
+              ) Studio Portal Sign-In
             .text-center.mt-5
               v-btn.text-none(
                 text
