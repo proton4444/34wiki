@@ -1,0 +1,98 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: outline-postgres
+    environment:
+      POSTGRES_USER: outline
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: outline
+    volumes:
+      - ./data-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U outline"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    networks:
+      - outline-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: outline-redis
+    command: ["redis-server", "--appendonly", "no"]
+    volumes:
+      - ./data-redis:/data
+    restart: unless-stopped
+    networks:
+      - outline-net
+
+  outline:
+    image: outlinewiki/outline:latest
+    container_name: outline-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - "6875:3000"
+    environment:
+      # ----- Core Settings -----
+      NODE_ENV: production
+      URL: ${OUTLINE_URL}
+      PORT: 3000
+      SECRET_KEY: ${SECRET_KEY}
+      UTILS_SECRET: ${UTILS_SECRET}
+      DEFAULT_LANGUAGE: en_US
+
+      # ----- Database -----
+      DATABASE_URL: postgres://outline:${POSTGRES_PASSWORD}@postgres:5432/outline
+      PGSSLMODE: disable
+
+      # ----- Redis -----
+      REDIS_URL: redis://redis:6379
+
+      # ----- File Storage (Local Disk - No S3) -----
+      FILE_STORAGE: local
+      FILE_STORAGE_LOCAL_ROOT_DIR: /var/lib/outline/data
+      FILE_STORAGE_UPLOAD_MAX_SIZE: "262144000"
+
+      # ----- HTTPS Settings -----
+      FORCE_HTTPS: "false"
+
+      # ----- Generic OIDC Authentication -----
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
+      OIDC_AUTH_URI: ${OIDC_AUTH_URI}
+      OIDC_TOKEN_URI: ${OIDC_TOKEN_URI}
+      OIDC_USERINFO_URI: ${OIDC_USERINFO_URI}
+      OIDC_USERNAME_CLAIM: preferred_username
+      OIDC_DISPLAY_NAME: "OpenID Connect"
+      OIDC_SCOPES: "openid profile email"
+
+      # ----- Optional: Google OAuth (for later, when you have HTTPS) -----
+      # GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      # GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+
+      # ----- Optional: SMTP for email notifications -----
+      # SMTP_HOST: ${SMTP_HOST}
+      # SMTP_PORT: ${SMTP_PORT}
+      # SMTP_USERNAME: ${SMTP_USERNAME}
+      # SMTP_PASSWORD: ${SMTP_PASSWORD}
+      # SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL}
+      # SMTP_SECURE: "true"
+
+      # ----- Logging -----
+      LOG_LEVEL: info
+
+    volumes:
+      - ./data-outline:/var/lib/outline/data
+    restart: unless-stopped
+    networks:
+      - outline-net
+
+networks:
+  outline-net:
+    name: outline-net
+    driver: bridge
