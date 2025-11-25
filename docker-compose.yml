@@ -85,7 +85,7 @@ services:
 
       # ----- Generic OIDC Authentication -----
       OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
-      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
+      OIDC_CLIENT_SECRET: ""
       OIDC_AUTH_URI: ${OIDC_AUTH_URI}
       OIDC_TOKEN_URI: ${OIDC_TOKEN_URI}
       OIDC_USERINFO_URI: ${OIDC_USERINFO_URI}
@@ -106,8 +106,8 @@ services:
       # SMTP_SECURE: "true"
 
       # ----- Branding & Customization -----
-      TEAM_LOGO: "file:///var/lib/outline/data/logo.png"
-      WORKSPACE_NAME: "34BIGTHINGS Wiki"
+      TEAM_LOGO: "/assets/favicon.svg"
+      WORKSPACE_NAME: "34Wiki"
 
       # ----- Logging -----
       LOG_LEVEL: debug
@@ -128,7 +128,8 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./custom-branding.css:/var/www/assets/custom-branding.css:ro
-      - ./data-outline/logo.png:/var/www/assets/logo.png:ro
+      - ./logo.png:/var/www/assets/logo.png:ro
+      - ./favicon.svg:/var/www/assets/favicon.svg:ro
     restart: unless-stopped
     networks:
       - outline-net
