@@ -1,0 +1,1 @@
+document.addEventListener("DOMContentLoaded",function(){function replaceText(){const spans=document.querySelectorAll("span");spans.forEach(span=>{if(span.textContent==="Outline"){span.textContent="34Wiki"}})}replaceText();const observer=new MutationObserver(replaceText);observer.observe(document.body,{childList:true,subtree:true})});
