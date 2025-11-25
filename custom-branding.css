@@ -1,5 +1,21 @@
 /* 34Wiki - Claude AI Inspired Theme */
 
+/* Replace Outline logo with 34Wiki logo */
+img[src*="logo"],
+img[src*="icon"],
+img[alt*="Outline"],
+[class*="logo"] img,
+[class*="Logo"] img {
+    content: url('/assets/logo.png') !important;
+    max-width: 32px !important;
+    max-height: 32px !important;
+}
+
+/* Hide original Outline text and replace with 34Wiki */
+[class*="Title"]:not([class*="Document"]):not([class*="Page"]):not([class*="Article"])::after {
+    content: "" !important;
+}
+
 /* Color Variables */
 * {
     --color-primary: #5ba4cf !important;

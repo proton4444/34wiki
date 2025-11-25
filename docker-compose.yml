@@ -106,7 +106,7 @@ services:
       # SMTP_SECURE: "true"
 
       # ----- Branding & Customization -----
-      TEAM_LOGO: "/assets/favicon.svg"
+      TEAM_LOGO: "/assets/logo.png"
       WORKSPACE_NAME: "34Wiki"
 
       # ----- Logging -----
