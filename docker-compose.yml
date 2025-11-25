@@ -38,6 +38,7 @@ services:
       KC_HOSTNAME_STRICT: "false"
       KC_HOSTNAME_STRICT_BACKCHANNEL: "false"
       KC_HTTP_ENABLED: "true"
+      KC_PROXY_ADDRESS_FORWARDING: "true"
     ports:
       - "8080:8080"
     restart: unless-stopped
@@ -55,7 +56,9 @@ services:
       redis:
         condition: service_started
     ports:
-      - "6875:3000"
+      - "3000:3000"
+    expose:
+      - "3000"
     environment:
       # ----- Core Settings -----
       NODE_ENV: production
@@ -102,11 +105,30 @@ services:
       # SMTP_FROM_EMAIL: ${SMTP_FROM_EMAIL}
       # SMTP_SECURE: "true"
 
+      # ----- Branding & Customization -----
+      TEAM_LOGO: "file:///var/lib/outline/data/logo.png"
+      WORKSPACE_NAME: "34BIGTHINGS Wiki"
+
       # ----- Logging -----
       LOG_LEVEL: debug
 
     volumes:
       - ./data-outline:/var/lib/outline/data
+    restart: unless-stopped
+    networks:
+      - outline-net
+
+  nginx:
+    image: nginx:alpine
+    container_name: outline-nginx
+    depends_on:
+      - outline
+    ports:
+      - "6875:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./custom-branding.css:/var/www/assets/custom-branding.css:ro
+      - ./data-outline/logo.png:/var/www/assets/logo.png:ro
     restart: unless-stopped
     networks:
       - outline-net

@@ -1,0 +1,68 @@
+/* 34BIGTHINGS Custom Branding */
+
+/* Replace Outline logo with 34BIGTHINGS */
+[class*="SidebarHeader"] {
+  background-color: #1a1a1a;
+}
+
+/* Hide default logo text, show custom logo */
+button:has(svg[viewBox*="0 0"]) {
+  background-image: url('/assets/logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Brand colors - Yellow (#FDB927) and Black */
+:root {
+  --primary-color: #FDB927;
+  --dark-bg: #1a1a1a;
+}
+
+/* Accent buttons with 34BIGTHINGS yellow */
+button[class*="primary"],
+a[class*="primary"],
+[class*="Button"][class*="primary"] {
+  background-color: #FDB927 !important;
+  color: #1a1a1a !important;
+}
+
+/* Header branding */
+[class*="Header"] {
+  background-color: #1a1a1a;
+  border-bottom: 2px solid #FDB927;
+}
+
+/* Sidebar styling */
+[class*="Sidebar"] {
+  background-color: #242424;
+}
+
+/* Logo area customization */
+[class*="Logo"],
+[class*="logo"] {
+  font-weight: bold;
+  color: #FDB927;
+  letter-spacing: 1px;
+}
+
+/* Links with brand color */
+a:not([class*="mention"]) {
+  color: #FDB927;
+}
+
+a:hover {
+  color: #ffd966;
+}
+
+/* Active states */
+[class*="active"],
+[aria-current="page"] {
+  color: #FDB927;
+  background-color: rgba(253, 185, 39, 0.1);
+}
+
+/* Focus states for accessibility */
+:focus-visible {
+  outline-color: #FDB927;
+}
