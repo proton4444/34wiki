@@ -27,6 +27,25 @@ services:
     networks:
       - outline-net
 
+  keycloak:
+    image: keycloak/keycloak:latest
+    container_name: outline-keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      # Hostname configuration for Docker networking
+      KC_HOSTNAME: ${KEYCLOAK_HOSTNAME}
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_BACKCHANNEL: "false"
+      KC_HTTP_ENABLED: "true"
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    networks:
+      - outline-net
+    command:
+      - "start-dev"
+
   outline:
     image: outlinewiki/outline:latest
     container_name: outline-app
@@ -84,7 +103,7 @@ services:
       # SMTP_SECURE: "true"
 
       # ----- Logging -----
-      LOG_LEVEL: info
+      LOG_LEVEL: debug
 
     volumes:
       - ./data-outline:/var/lib/outline/data
